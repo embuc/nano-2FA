@@ -17,12 +17,19 @@
 		</license>
 	</licenses>
 
+	<developers>
+		<developer>
+			<name>Emir Bucalovic</name>
+			<organizationUrl>https://github.com/embuc/nano-2FA</organizationUrl>
+		</developer>
+	</developers>
+	
 	<scm>
 		<url>https://github.com/embuc/nano-2FA</url>
 		<connection>scm:git:git@github.com:embuc/nano-2FA.git</connection>
 		<developerConnection>scm:git:git@github.com:embuc/nano-2FA.git</developerConnection>
 	  <tag>HEAD</tag>
-  </scm>
+ 	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
