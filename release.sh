@@ -55,7 +55,7 @@ fi
 ver=`head -1 changelog.txt | cut -f1 -d:`
 if [ "$release" != "$ver" ]; then
 	echo "Change log top line version seems wrong:"
-	head -1 src/main/javadoc/doc-files/changelog.txt
+	head -1 changelog.txt
 	exit 1
 fi
 
