@@ -1,7 +1,25 @@
+Prerequisites:
+Prepare gpg keys and sonatype credentials. In settings.xml (i.e. local file in .m2) add something like:
+<server>
+	<id>oss-id</id>
+	<username>_your_oss_username_</username>
+	<password>_your_oss_password_</password>
+</server> 
+Create your key-pair by using gpg2. On Ubuntu you might have to install the package gnupgp. 
+Make sure you are running version 2 by executing gpg --version. The keypair can be created via:
+gpg --gen-key
+Now, the folder ~/.gnupg contains all the files needed for signing. The maven plugin in pom.xml will use these.
+You will supply your password in the bash terminal when executing the deploy command.  
+
+-------------------------------------------------------------------------------
+To deploy a snapshot to oss sonatype nexus:
+
+mvn -Prelease deploy
+
 -------------------------------------------------------------------------------
 
-The following set of tasks should be performed when the libary gets released.
+To release and deploy:
 
-1) 
+mvn release:perform -Prelease deploy
 
 -------------------------------------------------------------------------------

@@ -65,7 +65,7 @@ public class TimeBasedOneTimePasswordUtil {
 	private static final String BLOCK_OF_ZEROS;
 	private static final Base32 BASE32 = new Base32();
 
-	/** Defaul number of milliseconds that they are allowed to be off and still match. (10 seconds) */
+	/** Default number of milliseconds that they are allowed to be off and still match. (10 seconds) */
 	private static final long DEFAULT_VALIDATION_WINDOW_MILLIS = 10_000;
 
 	static {
@@ -166,7 +166,6 @@ public class TimeBasedOneTimePasswordUtil {
 	 */
 	public static boolean validateCurrentNumber(String base32Secret, int authNumber) {
 		return validateCurrentNumber(base32Secret, authNumber, DEFAULT_VALIDATION_WINDOW_MILLIS);
-
 	}
 
 	/**
@@ -190,21 +189,6 @@ public class TimeBasedOneTimePasswordUtil {
 	}
 
 	/**
-	 * Return the string prepended with 0s. Tested as 10x faster than String.format("%06d", ...); Exposed for testing.
-	 */
-	static String zeroPrepend(int num, int digits) {
-		String numStr = Integer.toString(num);
-		if (numStr.length() >= digits) {
-			return numStr;
-		}
-		StringBuilder sb = new StringBuilder(digits);
-		int zeroCount = digits - numStr.length();
-		sb.append(BLOCK_OF_ZEROS, 0, zeroCount);
-		sb.append(numStr);
-		return sb.toString();
-	}
-
-	/**
 	 * Similar to {@link #generateNumberString(String, long, int, int)} but this returns a int instead of a string.
 	 *
 	 * @return A number which should match the user's authenticator application output.
@@ -224,17 +208,57 @@ public class TimeBasedOneTimePasswordUtil {
 		return generateNumberFromKeyValue(key, value, numDigits);
 	}
 
+	protected static int generateNumberFromKeyValue(byte[] key, long value, int numDigits) {
+		try {
+			byte[] data = new byte[8];
+			for (int i = 7; value > 0; i--) {
+				data[i] = (byte) (value & 0xFF);
+				value >>= 8;
+			}
+
+			/* Encrypt the data with the key and return the SHA1 of it in hex */
+			SecretKeySpec signKey = new SecretKeySpec(key, HMAC_SHA1);
+
+			/*
+			 * This will never throw. Every implementation of the Java platform is required to support at least: HmacMD5, HmacSHA1,
+			 * HmacSHA256.
+			 */
+			Mac mac = Mac.getInstance(HMAC_SHA1);
+			mac.init(signKey);
+			byte[] hash = mac.doFinal(data);
+			/* take the 4 least significant bits from the encrypted string as an offset */
+			int offset = hash[hash.length - 1] & 0xF;
+
+			long truncatedHash = 0;
+			for (int i = offset; i < offset + 4; ++i) {
+				truncatedHash <<= 8;
+				// get the 4 bytes at the offset
+				truncatedHash |= (hash[i] & 0xFF);
+			}
+			// cut off the top bit
+			truncatedHash &= 0x7FFFFFFF;
+
+			// the token is then the last <length> digits in the number
+			long mask = 1;
+			for (int i = 0; i < numDigits; i++) {
+				mask *= 10;
+			}
+			truncatedHash %= mask;
+			return (int) truncatedHash;
+		} catch (GeneralSecurityException e) {
+			/**
+			 * <code>Mac.getInstance(HMAC_SHA1);</code> This will never throw. Every implementation of the Java platform is required to support
+			 * at least: HmacMD5, HmacSHA1, HmacSHA256.
+			 *
+			 * <code>new SecretKeySpec(key, HMAC_SHA1)</code> will throw IllegalArgumentException if key is invalid
+			 * (null or empty). But for sake of transparency, expose any underlying exception.
+			 */
+			throw new IllegalArgumentException(e);
+		}
+	}
+
 	/**
 	 * Similar to {@link #generateCurrentNumberString(String)} except exposes other parameters. Mostly for testing.
-	 *
-	 * @param base32Secret Secret string encoded using base-32 that was used to generate the QR code or shared with the
-	 * user.
-	 * @param timeMillis Time in milliseconds.
-	 * @param timeStepSeconds Time step in seconds. The default value is 30 seconds here. See
-	 * {@link #DEFAULT_TIME_STEP_SECONDS}.
-	 * @param numDigits The number of digits of the OTP.
-	 * @return A number as a string with possible leading zeros which should match the user's authenticator application
-	 * output.
 	 */
 	protected static String generateNumberString(String base32Secret, long timeMillis, int timeStepSeconds, int numDigits) {
 		int number = generateNumber(base32Secret, timeMillis, timeStepSeconds, numDigits);
@@ -287,16 +311,6 @@ public class TimeBasedOneTimePasswordUtil {
 
 	/**
 	 * Similar to {@link #validateCurrentNumber(String, int, long)} except exposes other parameters. Mostly for testing.
-	 *
-	 * @param base32Secret Secret string encoded using base-32 that was used to generate the QR code or shared with the
-	 * user.
-	 * @param authNumber Time based number provided by the user from their authenticator application.
-	 * @param windowMillis Number of milliseconds that they are allowed to be off and still match. This checks before and
-	 * after the current time to account for clock variance. Set to 0 for no window.
-	 * @param timeMillis Time in milliseconds.
-	 * @param timeStepSeconds Time step in seconds. The default value is 30 seconds here. See
-	 * {@link #DEFAULT_TIME_STEP_SECONDS}.
-	 * @return True if the authNumber matched the calculated number within the specified window.
 	 */
 	protected static boolean validateCurrentNumber(String base32Secret, int authNumber, long windowMillis, long timeMillis, int timeStepSeconds) {
 		return validateCurrentNumber(base32Secret, authNumber, windowMillis, timeMillis, timeStepSeconds, DEFAULT_OTP_LENGTH);
@@ -304,77 +318,29 @@ public class TimeBasedOneTimePasswordUtil {
 
 	/**
 	 * Similar to {@link #validateCurrentNumber(String, int, long)} except exposes other parameters. Mostly for testing.
-	 *
-	 * @param base32Secret Secret string encoded using base-32 that was used to generate the QR code or shared with the
-	 * user.
-	 * @param authNumber Time based number provided by the user from their authenticator application.
-	 * @param windowMillis Number of milliseconds that they are allowed to be off and still match. This checks before and
-	 * after the current time to account for clock variance. Set to 0 for no window.
-	 * @param timeMillis Time in milliseconds.
-	 * @param timeStepSeconds Time step in seconds. The default value is 30 seconds here. See
-	 * {@link #DEFAULT_TIME_STEP_SECONDS}.
-	 * @param numDigits The number of digits of the OTP.
-	 * @return True if the authNumber matched the calculated number within the specified window.
 	 */
 	protected static boolean validateCurrentNumber(String base32Secret, int authNumber, long windowMillis, long timeMillis, int timeStepSeconds, int numDigits) {
 		byte[] key = BASE32.decode(base32Secret);
 		return validateCurrentNumber(key, authNumber, windowMillis, timeMillis, timeStepSeconds, numDigits);
 	}
 
-	private static void addOtpAuthPart(String keyId, String secret, StringBuilder sb, int numDigits) {
-		sb.append("otpauth://totp/").append(keyId).append("%3Fsecret%3D").append(secret).append("%26digits%3D").append(numDigits);
+	/**
+	 * Return the string prepended with 0s. Tested as 10x faster than String.format("%06d", ...); Exposed for testing.
+	 */
+	protected static String zeroPrepend(int num, int digits) {
+		String numStr = Integer.toString(num);
+		if (numStr.length() >= digits) {
+			return numStr;
+		}
+		StringBuilder sb = new StringBuilder(digits);
+		int zeroCount = digits - numStr.length();
+		sb.append(BLOCK_OF_ZEROS, 0, zeroCount);
+		sb.append(numStr);
+		return sb.toString();
 	}
 
-	protected static int generateNumberFromKeyValue(byte[] key, long value, int numDigits) {
-		try {
-			byte[] data = new byte[8];
-			for (int i = 7; value > 0; i--) {
-				data[i] = (byte) (value & 0xFF);
-				value >>= 8;
-			}
-
-			// encrypt the data with the key and return the SHA1 of it in hex
-			SecretKeySpec signKey = new SecretKeySpec(key, HMAC_SHA1);
-
-			/*
-			 * This will never throw. Every implementation of the Java platform is required to support at least: HmacMD5, HmacSHA1,
-			 * HmacSHA256.
-			 */
-			Mac mac = Mac.getInstance(HMAC_SHA1);
-
-			mac.init(signKey);
-
-			byte[] hash = mac.doFinal(data);
-			// take the 4 least significant bits from the encrypted string as an offset
-			int offset = hash[hash.length - 1] & 0xF;
-
-			// We're using a long because Java hasn't got unsigned int.
-			long truncatedHash = 0;
-			for (int i = offset; i < offset + 4; ++i) {
-				truncatedHash <<= 8;
-				// get the 4 bytes at the offset
-				truncatedHash |= (hash[i] & 0xFF);
-			}
-			// cut off the top bit
-			truncatedHash &= 0x7FFFFFFF;
-
-			// the token is then the last <length> digits in the number
-			long mask = 1;
-			for (int i = 0; i < numDigits; i++) {
-				mask *= 10;
-			}
-			truncatedHash %= mask;
-			return (int) truncatedHash;
-		} catch (GeneralSecurityException e) {
-			/**
-			 * <code>Mac.getInstance(HMAC_SHA1);</code> This will never throw. Every implementation of the Java platform is required to support
-			 * at least: HmacMD5, HmacSHA1, HmacSHA256.
-			 *
-			 * <code>new SecretKeySpec(key, HMAC_SHA1)</code> will throw IllegalArgumentException if key is invalid
-			 * (null or empty). But for sake of transparency, expose any underlying exception.
-			 */
-			throw new IllegalArgumentException(e);
-		}
+	private static void addOtpAuthPart(String keyId, String secret, StringBuilder sb, int numDigits) {
+		sb.append("otpauth://totp/").append(keyId).append("%3Fsecret%3D").append(secret).append("%26digits%3D").append(numDigits);
 	}
 
 	private static long generateValue(long timeMillis, int timeStepSeconds) {

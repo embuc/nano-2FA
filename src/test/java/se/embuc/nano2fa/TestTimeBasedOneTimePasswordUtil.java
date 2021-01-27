@@ -181,4 +181,11 @@ public class TestTimeBasedOneTimePasswordUtil {
 		int numDigits = 6;
 		TimeBasedOneTimePasswordUtil.generateNumberFromKeyValue(byteKey, value, numDigits);
 	}
+
+	@Test
+	public void shouldValidateCorrectlyDefaultAPICallChain() throws Exception {
+		String base32Secret = TimeBasedOneTimePasswordUtil.generateBase32Secret();
+		String numberString = TimeBasedOneTimePasswordUtil.generateCurrentNumberString(base32Secret);
+		assertTrue(TimeBasedOneTimePasswordUtil.validateCurrentNumber(base32Secret, Integer.valueOf(numberString).intValue()));
+	}
 }

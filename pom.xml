@@ -85,9 +85,13 @@
 			<id>release</id>
 			<distributionManagement>
 				<repository>
-					<id>ossrh</id>
+					<id>oss-embuc</id>
 					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 				</repository>
+				<snapshotRepository>
+					<id>oss-embuc</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</snapshotRepository>
 			</distributionManagement>
 			<build>
 				<plugins>
@@ -108,6 +112,9 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<version>3.2.0</version>
+					    <configuration>
+					      <additionalOptions>-Xdoclint:none</additionalOptions>
+					    </configuration>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
