@@ -1,4 +1,6 @@
+1.2: 2021-01-28
+	* Minor updates and release-related fixes.
 1.1: 2021-01-28
-	* Added explicit maven release plugin configuration
+	* Added explicit maven release plugin configuration.
 1.0: 2021-01-27
 	* Initial public maven release.
