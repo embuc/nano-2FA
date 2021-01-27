@@ -14,7 +14,7 @@ Add your public key to some keyserver e.g. http://keyserver.ubuntu.com/
 First export it like this (this is ascii format that server above uses):
 gpg --armor --export {username-usually your email} > pub-asc.gpg
 then simply upload this file.
-
+Another alternative for key-server is keys.openpgp.org.
 -------------------------------------------------------------------------------
 To deploy a snapshot to oss sonatype nexus:
 
