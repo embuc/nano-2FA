@@ -22,6 +22,8 @@ You can use this code with the Google Authenticator mobile app or the Authy mobi
 3. The server compares the user input with the output from `generateCurrentNumberString(...)`.
 4. If they are equal then the user is allowed to log in.
 
+For more details, see the [example program](https://github.com/embuc/nano-2FA/blob/master/src/test/java/se/embuc/nano2fa/TwoFactorAuthUsageExample.java).
+
 # Maven Configuration
 
 ``` xml
