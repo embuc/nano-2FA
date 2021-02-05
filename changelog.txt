@@ -1,3 +1,5 @@
+1.5: 2021-02-05
+	* Added convenience method for generating recovery codes (with default size of 20).
 1.4: 2021-01-28
 	* Updated apache commons to newer version.
 1.3: 2021-01-28
