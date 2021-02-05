@@ -5,7 +5,7 @@ Two (2) Factor Authentication (2FA) Java Code
 You can use this code with the Google Authenticator mobile app or the Authy mobile or browser app.
 
 * See the [wikipedia page about TOTP](https://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm).	
-* Maven packages are published via [[Maven Central](https://https://mvnrepository.com/artifact/com.github.embuc)]
+* Maven packages are published via [[Maven Central](https://mvnrepository.com/artifact/com.github.embuc)]
 
 ## To get this to work you:
 
