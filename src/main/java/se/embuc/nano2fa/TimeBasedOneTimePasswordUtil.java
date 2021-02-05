@@ -51,6 +51,7 @@ import org.apache.commons.codec.binary.Base32;
  */
 public class TimeBasedOneTimePasswordUtil {
 
+	private static final int RECOVER_CODE_CHUNK_DEFAULT_LENGTH = 4;
 	private static final String HMAC_SHA1 = "HmacSHA1";
 	protected static final int DEFAULT_PRIVATE_KEY_LENGTH = 20;
 	/** default time-step which is part of the spec, 30 seconds is default */
@@ -186,6 +187,26 @@ public class TimeBasedOneTimePasswordUtil {
 	 */
 	public static boolean validateCurrentNumber(String base32Secret, int authNumber, long windowMillis) {
 		return validateCurrentNumber(base32Secret, authNumber, windowMillis, System.currentTimeMillis(), DEFAULT_TIME_STEP_SECONDS, DEFAULT_OTP_LENGTH);
+	}
+
+	/**
+	 * Generate formatted recovery code containing 20 base32 characters grouped in five (5) chunks of four (4) digits and
+	 * separated by dash.
+	 *
+	 * @return the string
+	 */
+	public static String generateFormattedRecoveryCode() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(generateBase32Secret(RECOVER_CODE_CHUNK_DEFAULT_LENGTH));
+		builder.append('-');
+		builder.append(generateBase32Secret(RECOVER_CODE_CHUNK_DEFAULT_LENGTH));
+		builder.append('-');
+		builder.append(generateBase32Secret(RECOVER_CODE_CHUNK_DEFAULT_LENGTH));
+		builder.append('-');
+		builder.append(generateBase32Secret(RECOVER_CODE_CHUNK_DEFAULT_LENGTH));
+		builder.append('-');
+		builder.append(generateBase32Secret(RECOVER_CODE_CHUNK_DEFAULT_LENGTH));
+		return builder.toString();
 	}
 
 	/**

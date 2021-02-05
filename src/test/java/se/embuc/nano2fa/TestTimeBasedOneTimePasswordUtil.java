@@ -188,4 +188,11 @@ public class TestTimeBasedOneTimePasswordUtil {
 		String numberString = TimeBasedOneTimePasswordUtil.generateCurrentNumberString(base32Secret);
 		assertTrue(TimeBasedOneTimePasswordUtil.validateCurrentNumber(base32Secret, Integer.valueOf(numberString).intValue()));
 	}
+
+	@Test
+	public void shouldGenerateFormattedRecoveryCode() {
+		String recoveryCode = TimeBasedOneTimePasswordUtil.generateFormattedRecoveryCode();
+		assertNotNull(recoveryCode);
+		assertEquals(24, recoveryCode.length());
+	}
 }
