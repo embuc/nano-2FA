@@ -1,3 +1,5 @@
+1.6: 2023-12-30
+    * Updated dependencies. Migrated tests to JUnit 5.
 1.5: 2021-02-05
 	* Added convenience method for generating recovery codes (with default size of 20).
 1.4: 2021-01-28

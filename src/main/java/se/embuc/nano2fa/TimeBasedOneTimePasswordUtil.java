@@ -59,7 +59,7 @@ public class TimeBasedOneTimePasswordUtil {
 	/** default number of digits in a OTP string */
 	protected static final int DEFAULT_OTP_LENGTH = 6;
 	/** default hight/width of QR image */
-	protected static final int DEFAULT_QR_DIMENTION = 200;
+	protected static final int DEFAULT_QR_DIMENSION = 200;
 	/** set to the number of digits to control 0 prefix, set to 0 for no prefix */
 	private static final int MAX_NUM_DIGITS_OUTPUT = 100;
 
@@ -135,7 +135,7 @@ public class TimeBasedOneTimePasswordUtil {
 	 * @return image url
 	 */
 	public static String qrImageUrl(String keyId, String secret) {
-		return qrImageUrl(keyId, secret, DEFAULT_OTP_LENGTH, DEFAULT_QR_DIMENTION);
+		return qrImageUrl(keyId, secret, DEFAULT_OTP_LENGTH, DEFAULT_QR_DIMENSION);
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class TimeBasedOneTimePasswordUtil {
 	 * @return image url
 	 */
 	public static String qrImageUrl(String keyId, String secret, int numDigits) {
-		return qrImageUrl(keyId, secret, numDigits, DEFAULT_QR_DIMENTION);
+		return qrImageUrl(keyId, secret, numDigits, DEFAULT_QR_DIMENSION);
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class TimeBasedOneTimePasswordUtil {
 	}
 
 	/**
-	 * Similar to {@link #generateNumberString(String, long, int)} but this returns a int instead of a string.
+	 * Similar to {@link #generateNumberString(String, long, int, int)} but this returns a int instead of a string.
 	 *
 	 * @return A number which should match the user's authenticator application output.
 	 */
@@ -321,7 +321,7 @@ public class TimeBasedOneTimePasswordUtil {
 	 * encoded.
 	 * @param secret Secret string that will be used when generating the current number.
 	 * @param numDigits The number of digits of the OTP. Can be set to {@link #DEFAULT_OTP_LENGTH}.
-	 * @param imageDimension The dimension of the image, width and height. Can be set to {@link #DEFAULT_QR_DIMENTION}.
+	 * @param imageDimension The dimension of the image, width and height. Can be set to {@link #DEFAULT_QR_DIMENSION}.
 	 */
 	protected static String qrImageUrl(String keyId, String secret, int numDigits, int imageDimension) {
 		StringBuilder sb = new StringBuilder(128);

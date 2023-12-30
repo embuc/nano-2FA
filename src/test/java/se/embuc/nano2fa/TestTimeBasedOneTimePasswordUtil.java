@@ -1,13 +1,11 @@
 package se.embuc.nano2fa;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * TestTimeBasedOneTimePasswordUtil.
@@ -16,11 +14,9 @@ import org.junit.Test;
  * @author Emir Bucalovic
  * @since 06 Dec 2016
  */
-@SuppressWarnings("javadoc")
 public class TestTimeBasedOneTimePasswordUtil {
 
 	@Test
-	@SuppressWarnings("boxing")
 	public void testZeroPrepend() {
 		Random random = new Random();
 		for (int i = 0; i < 10000; i++) {
@@ -33,7 +29,7 @@ public class TestTimeBasedOneTimePasswordUtil {
 	}
 
 	@Test
-	public void testVariusKnownSecretTimeCodes() {
+	public void testVariousKnownSecretTimeCodes() {
 		String secret = "NY4A5CPJZ46LXZCP";
 
 		testStringAndNumber(secret, 1000L, 748810, "748810");
@@ -73,7 +69,7 @@ public class TestTimeBasedOneTimePasswordUtil {
 		String str = TimeBasedOneTimePasswordUtil.generateNumberString(secret, timeMillis, TimeBasedOneTimePasswordUtil.DEFAULT_TIME_STEP_SECONDS, length);
 		assertEquals(length, str.length());
 		assertEquals(expectedString, str);
-		assertEquals("expected numbers to match", expectedNumber, TimeBasedOneTimePasswordUtil.generateNumber(secret, timeMillis, TimeBasedOneTimePasswordUtil.DEFAULT_TIME_STEP_SECONDS, length));
+		assertEquals(expectedNumber, TimeBasedOneTimePasswordUtil.generateNumber(secret, timeMillis, TimeBasedOneTimePasswordUtil.DEFAULT_TIME_STEP_SECONDS, length));
 	}
 
 	@Test
@@ -166,20 +162,20 @@ public class TestTimeBasedOneTimePasswordUtil {
 		assertNotNull(TimeBasedOneTimePasswordUtil.qrImageUrl("key", secret, 3, 500));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void shouldThrowForEmptyKey() {
 		byte[] byteKey = new byte[0];
 		long value = 123456l;
 		int numDigits = 6;
-		TimeBasedOneTimePasswordUtil.generateNumberFromKeyValue(byteKey, value, numDigits);
+		assertThrows(IllegalArgumentException.class, () -> TimeBasedOneTimePasswordUtil.generateNumberFromKeyValue(byteKey, value, numDigits));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void shouldThrowForNullKey() {
 		byte[] byteKey = null;
 		long value = 123456l;
 		int numDigits = 6;
-		TimeBasedOneTimePasswordUtil.generateNumberFromKeyValue(byteKey, value, numDigits);
+		assertThrows(IllegalArgumentException.class, () -> TimeBasedOneTimePasswordUtil.generateNumberFromKeyValue(byteKey, value, numDigits));
 	}
 
 	@Test
