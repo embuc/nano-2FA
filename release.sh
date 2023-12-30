@@ -80,7 +80,7 @@ GPG_ARGS="-Darguments=-Dgpg.passphrase=$gpgpass -Dgpg.passphrase=$gpgpass -DgpgP
 
 tmp="/tmp/release.sh.$$.t"
 touch $tmp
-gpg --passphrase $gpgpass -s -u 005A47120EEE9ABDD1BAC06107429096BC2AA85E $tmp > /dev/null 2>&1
+gpg --passphrase $gpgpass -s -u 1BCA4D28529BA575BD653846B9559DB0A4BCF148 $tmp > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     /bin/echo "Passphrase incorrect"
     exit 1
