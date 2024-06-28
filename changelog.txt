@@ -1,3 +1,5 @@
+1.7: 2024-06-28
+    * Replaced deprecated (now removed) Google server for qr images with open source alternative: quickchart.io.
 1.6: 2023-12-30
     * Updated dependencies. Migrated tests to JUnit 5.
 1.5: 2021-02-05
