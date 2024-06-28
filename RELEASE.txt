@@ -1,5 +1,6 @@
 Prerequisites:
 Prepare gpg keys and sonatype credentials. In settings.xml (i.e. local file in .m2) add something like:
+(edit: jun 2024: we need to use token for login, generated at sonatype website)
 <server>
 	<id>oss-id</id>
 	<username>_your_oss_username_</username>
@@ -27,3 +28,5 @@ To release and deploy:
 ./release.sh
 
 -------------------------------------------------------------------------------
+
+Then the new artifact will be in the staging repository. You can close it and release it via the web interface of sonatype.
