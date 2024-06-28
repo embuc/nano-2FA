@@ -65,9 +65,12 @@ public class TimeBasedOneTimePasswordUtil {
 
 	private static final String BLOCK_OF_ZEROS;
 	private static final Base32 BASE32 = new Base32();
+	//	Default server for generating images, might be also something like: "image-charts.com";
+	private static final String SERVER_URI = "quickchart.io";
 
 	/** Default number of milliseconds that they are allowed to be off and still match. (10 seconds) */
 	private static final long DEFAULT_VALIDATION_WINDOW_MILLIS = 10_000;
+
 
 	static {
 		char[] chars = new char[MAX_NUM_DIGITS_OUTPUT];
@@ -325,7 +328,11 @@ public class TimeBasedOneTimePasswordUtil {
 	 */
 	protected static String qrImageUrl(String keyId, String secret, int numDigits, int imageDimension) {
 		StringBuilder sb = new StringBuilder(128);
-		sb.append("https://chart.googleapis.com/chart?chs=" + imageDimension + "x" + imageDimension + "&cht=qr&chl=" + imageDimension + "x" + imageDimension + "&chld=M|0&cht=qr&chl=");
+		sb.append("https://");
+		sb.append(SERVER_URI);
+		sb.append("/chart?chs=");
+		sb.append(imageDimension + "x" + imageDimension + "&cht=qr&chl=");
+//		sb.append(imageDimension + "x" + imageDimension + "&cht=qr&chl=" + imageDimension + "x" + imageDimension + "&chld=M|0&cht=qr&chl=");
 		addOtpAuthPart(keyId, secret, sb, numDigits);
 		return sb.toString();
 	}
