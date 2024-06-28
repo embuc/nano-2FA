@@ -31,7 +31,7 @@ For more details, see the [example program](https://github.com/embuc/nano-2FA/bl
 	<dependency>
 		<groupId>com.github.embuc</groupId>
 		<artifactId>nano2fa</artifactId>
-		<version>1.8</version>
+		<version>1.9</version>
 	</dependency>
 </dependencies>
 ```
