@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.embuc</groupId>
 	<artifactId>nano2fa</artifactId>
-	<version>1.11-SNAPSHOT</version>
+	<version>1.11</version>
 	<packaging>jar</packaging>
 	<name>Two Factor Auth nano</name>
 	<url>https://github.com/embuc/nano-2FA</url>
@@ -28,7 +28,7 @@
 		<url>https://github.com/embuc/nano-2FA</url>
 		<connection>scm:git:git@github.com:embuc/nano-2FA.git</connection>
 		<developerConnection>scm:git:git@github.com:embuc/nano-2FA.git</developerConnection>
-	  <tag>HEAD</tag>
+	  <tag>nano2fa-1.11</tag>
  	</scm>
 
 	<distributionManagement>
