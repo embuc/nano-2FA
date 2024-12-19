@@ -1,3 +1,5 @@
+1.11: 2024-06-28
+    * Maven plugins (source,javadoc,enforcer) updated to newer versions.
 1.10: 2024-06-28
     * Minor updates (documentation).
 1.9: 2024-06-28
