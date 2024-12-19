@@ -19,6 +19,7 @@ Another alternative for key-server is keys.openpgp.org.
 -------------------------------------------------------------------------------
 To deploy a snapshot to oss sonatype nexus:
 
+
 mvn -Prelease deploy
 
 -------------------------------------------------------------------------------
